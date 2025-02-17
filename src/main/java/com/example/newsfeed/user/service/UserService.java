@@ -71,6 +71,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    /**
+     * 특정 사용자의 프로필을 수정
+     */
     @Transactional
     public void updateProfile(Long userId, String name, String introText) {
         User user = userRepository.findById(userId)
