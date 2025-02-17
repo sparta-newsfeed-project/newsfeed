@@ -1,10 +1,10 @@
-package com.example.newsfeed.user.controller;
+package com.example.newsfeed.auth.controller;
 
 import com.example.newsfeed.auth.consts.SessionConst;
-import com.example.newsfeed.user.dto.AuthRequestDto.LoginRequestDto;
-import com.example.newsfeed.user.dto.AuthRequestDto.RegisterRequestDto;
-import com.example.newsfeed.user.dto.AuthResponseDto.LoginResponseDto;
-import com.example.newsfeed.user.service.AuthService;
+import com.example.newsfeed.auth.dto.AuthRequestDto.LoginRequestDto;
+import com.example.newsfeed.auth.dto.AuthRequestDto.RegisterRequestDto;
+import com.example.newsfeed.auth.dto.AuthResponseDto.LoginResponseDto;
+import com.example.newsfeed.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
