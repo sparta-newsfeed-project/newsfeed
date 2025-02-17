@@ -11,6 +11,7 @@ public enum ExceptionType {
 
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "로그인 정보가 올바르지 않습니다."),
     INVALID_SESSION(HttpStatus.UNAUTHORIZED, "세션이 유효하지 않습니다. 로그인 후 다시 시도해주세요."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
 
     NO_PERMISSION_ACTION(HttpStatus.FORBIDDEN, "권한이 없는 작업입니다."),
 

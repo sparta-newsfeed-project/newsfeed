@@ -30,4 +30,12 @@ public class UserRequestDto {
         @Size(max = 100)
         private final String name;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class WithdrawRequestDto {
+        @NotBlank
+        @Size(min = 8)
+        private final String password;
+    }
 }
