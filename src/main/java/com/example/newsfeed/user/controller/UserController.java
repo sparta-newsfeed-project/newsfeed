@@ -1,7 +1,11 @@
 package com.example.newsfeed.user.controller;
 
+import com.example.newsfeed.auth.argument.Authenticated;
 import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
+import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
 import com.example.newsfeed.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +25,20 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDto requestDto) {
         userService.register(requestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<Void> withdraw(
+            @Authenticated Long userId,
+            @Valid @RequestBody WithdrawRequestDto requestDto,
+            HttpServletRequest request
+    ) {
+        userService.withdraw(userId, requestDto);
+
+        HttpSession session = request.getSession(false);
+        session.invalidate();
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
