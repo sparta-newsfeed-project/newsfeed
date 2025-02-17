@@ -1,6 +1,6 @@
 package com.example.newsfeed.user.controller;
 
-import com.example.newsfeed.user.consts.SessionConst;
+import com.example.newsfeed.auth.consts.SessionConst;
 import com.example.newsfeed.user.dto.AuthRequestDto.LoginRequestDto;
 import com.example.newsfeed.user.dto.AuthRequestDto.RegisterRequestDto;
 import com.example.newsfeed.user.dto.AuthResponseDto.LoginResponseDto;
