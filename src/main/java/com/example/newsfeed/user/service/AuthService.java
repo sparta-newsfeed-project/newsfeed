@@ -47,7 +47,7 @@ public class AuthService {
     }
 
     private void validatePasswordMatch(String rawPassword, String encodedPassword) {
-        if (passwordEncoder.matches(rawPassword, encodedPassword)) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
             throw new CustomException(ExceptionType.INVALID_CREDENTIALS);
         }
     }
