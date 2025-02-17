@@ -103,7 +103,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
 
-        userRepository.delete(user);
+        user.delete(); // 논리 삭제 적용
     }
 
 }
