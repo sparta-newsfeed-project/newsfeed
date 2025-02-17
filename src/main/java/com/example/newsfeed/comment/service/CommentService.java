@@ -1,6 +1,7 @@
 package com.example.newsfeed.comment.service;
 
 import com.example.newsfeed.comment.domain.Comment;
+import com.example.newsfeed.comment.dto.CommentDetailResponseDto;
 import com.example.newsfeed.comment.dto.CommentRequestDto;
 import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
 import com.example.newsfeed.comment.repository.CommentRepository;
@@ -10,6 +11,9 @@ import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +40,16 @@ public class CommentService {
                 savedComment.getPost().getId(),
                 savedComment.getContent()
         );
+    }
+
+    public List<CommentDetailResponseDto> getAllComments(Long postId) {
+        return commentRepository.findAll().stream()
+                .map(comment -> new CommentDetailResponseDto(
+                        comment.getId(),
+                        comment.getPost().getId(),
+                        comment.getContent(),
+                        userRepository.findByComment(comment).getName()
+                )).collect(Collectors.toList());
+
     }
 }
