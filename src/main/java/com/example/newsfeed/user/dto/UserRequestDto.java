@@ -5,8 +5,20 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class UserRequestDto {
+
+    @Getter
+    @NoArgsConstructor
+    public static class ProfileRequestDto {
+        // 클라이언트가 보낸 요청 데이터를 담는 DTO
+        private String name;
+        private String email;
+        private String password;
+        private String introText;
+    }
+
     @Getter
     @AllArgsConstructor
     public static class RegisterRequestDto {
