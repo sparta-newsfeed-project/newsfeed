@@ -2,7 +2,6 @@ package com.example.newsfeed.auth.controller;
 
 import com.example.newsfeed.auth.consts.SessionConst;
 import com.example.newsfeed.auth.dto.AuthRequestDto.LoginRequestDto;
-import com.example.newsfeed.auth.dto.AuthRequestDto.RegisterRequestDto;
 import com.example.newsfeed.auth.dto.AuthResponseDto.LoginResponseDto;
 import com.example.newsfeed.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,20 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/users/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDto requestDto) {
-        authService.register(requestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto requestDto,
-                                                  HttpServletRequest request) {
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(
+            @Valid @RequestBody LoginRequestDto requestDto,
+            HttpServletRequest request
+    ) {
         LoginResponseDto responseDto = authService.login(requestDto);
 
         // 세션 생성 및 userId 세션에 저장
