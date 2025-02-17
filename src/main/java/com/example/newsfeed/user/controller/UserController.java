@@ -1,6 +1,7 @@
 package com.example.newsfeed.user.controller;
 
 import com.example.newsfeed.auth.argument.Authenticated;
+import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.dto.UserRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
@@ -48,6 +49,13 @@ public class UserController {
         session.invalidate();
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 특정 유저 조회
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        return ResponseEntity.ok(new UserResponseDto(user));
     }
 
     // 전체 유저 조회
