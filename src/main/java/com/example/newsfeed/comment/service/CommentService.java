@@ -2,7 +2,7 @@ package com.example.newsfeed.comment.service;
 
 import com.example.newsfeed.comment.domain.Comment;
 import com.example.newsfeed.comment.dto.CommentRequestDto;
-import com.example.newsfeed.comment.dto.CommentResponseDto;
+import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
 import com.example.newsfeed.comment.repository.CommentRepository;
 import com.example.newsfeed.post.domain.Post;
 import com.example.newsfeed.post.repository.PostRepository;
@@ -18,7 +18,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CommentResponseDto saveComment(Long postId, CommentRequestDto dto) {
+    public CommentSimpleResponseDto saveComment(Long postId, CommentRequestDto dto) {
         User user = userRepository.findById(dto.getUserId()).orElseThrow(
                 () -> new IllegalStateException("User not found")
         );
@@ -30,7 +30,7 @@ public class CommentService {
         Comment comment = new Comment(user, post, dto.getContent());
         Comment savedComment = commentRepository.save(comment);
 
-        return new CommentResponseDto(
+        return new CommentSimpleResponseDto(
                 savedComment.getId(),
                 savedComment.getUser().getId(),
                 savedComment.getPost().getId(),

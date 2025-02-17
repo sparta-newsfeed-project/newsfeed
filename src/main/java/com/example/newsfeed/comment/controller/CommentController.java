@@ -1,7 +1,7 @@
 package com.example.newsfeed.comment.controller;
 
 import com.example.newsfeed.comment.dto.CommentRequestDto;
-import com.example.newsfeed.comment.dto.CommentResponseDto;
+import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
 import com.example.newsfeed.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/api/posts/{postId}/comments")
-    public ResponseEntity<CommentResponseDto> saveComment(@PathVariable Long postId, @RequestBody CommentRequestDto dto) {
+    public ResponseEntity<CommentSimpleResponseDto> saveComment(@PathVariable Long postId, @RequestBody CommentRequestDto dto) {
         return ResponseEntity.ok(commentService.saveComment(postId, dto));
     }
 }
