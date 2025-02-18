@@ -34,4 +34,24 @@ public class FollowController {
         followService.deleteFollow(currentUserId, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/following/{userId}")
+    public ResponseEntity<Page<FollowListResponse>> followingList(
+            @PathVariable Long userId,
+            Pageable pageable
+    ) {
+        return new ResponseEntity<>(
+                followService.getFollowingList(userId, pageable), HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/followers/{userId}")
+    public ResponseEntity<Page<FollowListResponse>> followerList(
+            @PathVariable Long userId,
+            Pageable pageable
+    ) {
+        return new ResponseEntity<>(
+                followService.getFollowersList(userId, pageable), HttpStatus.OK
+        );
+    }
 }

@@ -40,13 +40,40 @@ public class FollowService {
     public void deleteFollow(Long currentUserId, Long userId) {
         User followerUser = userService.getUserById(currentUserId);
         User followedUser = userService.getUserById(userId);
-        Follow follow = getFollowByFollowerAndFollowed(followerUser, followedUser);
+        Follow follow = getFollowByFollowerAndFollowedUser(followerUser, followedUser);
 
         followRepository.delete(follow);
     }
 
+    @Transactional(readOnly = true)
+    public Page<FollowListResponse> getFollowingList(Long userId, Pageable pageable) {
+        User user = userService.getUserById(userId);
+        Page<Follow> following = followRepository.findAllByFollower(user, pageable);
 
-    public Follow getFollowByFollowerAndFollowed(User followerUser, User followedUser) {
+        return new PageImpl<>(
+                following.stream()
+                        .map((follow)-> FollowListResponse.from(follow.getFollowed()))
+                        .toList(),
+                pageable,
+                following.getTotalElements()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Page<FollowListResponse> getFollowersList(Long userId, Pageable pageable) {
+        User user = userService.getUserById(userId);
+        Page<Follow> followers = followRepository.findAllByFollowed(user, pageable);
+
+        return new PageImpl<>(
+                followers.stream()
+                        .map((follow)-> FollowListResponse.from(follow.getFollower()))
+                        .toList(),
+                pageable,
+                followers.getTotalElements()
+        );
+    }
+
+    public Follow getFollowByFollowerAndFollowedUser(User followerUser, User followedUser) {
         return followRepository.findByFollowerAndFollowed(followerUser, followedUser)
                 .orElseThrow(() -> new CustomException(ExceptionType.FOLLOW_NOT_FOUND));
     }
