@@ -76,4 +76,10 @@ public class PostService {
                 .orElseThrow(()-> new CustomException(ExceptionType.POST_NOT_FOUND));
     }
 
+    public PaginationResponse<PostResponse> getFollowingPosts(Long userId, Pageable pageable) {
+        User user = userService.getUserById(userId);
+        Page<Post> posts = postRepository.findAllByFollowing(user, pageable);
+
+        return new PaginationResponse<>(posts.map(PostResponse::from));
+    }
 }
