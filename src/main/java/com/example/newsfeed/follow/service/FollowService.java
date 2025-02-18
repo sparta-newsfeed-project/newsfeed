@@ -4,7 +4,7 @@ import com.example.newsfeed.exception.CustomException;
 import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.follow.domain.Follow;
 import com.example.newsfeed.follow.dto.FollowListResponse;
-import com.example.newsfeed.follow.repository.FollowRepository;
+import com.example.newsfeed.follow.service.repository.FollowRepository;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.service.UserService;
 import lombok.RequiredArgsConstructor;
