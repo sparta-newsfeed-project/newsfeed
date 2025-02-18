@@ -1,5 +1,6 @@
 package com.example.newsfeed.user.repository;
 
+import com.example.newsfeed.comment.domain.Comment;
 import com.example.newsfeed.exception.CustomException;
 import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.user.domain.User;
@@ -10,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findByComment(Comment comment);
+  
     boolean existsByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.deletedAt IS NULL")

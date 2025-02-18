@@ -1,18 +1,31 @@
 package com.example.newsfeed.comment.dto;
 
+import com.example.newsfeed.comment.domain.Comment;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
+@Builder
+@AllArgsConstructor
 @Getter
 public class CommentResponseDto {
-    private final Long id;
-    private final Long userId;
-    private final Long postId;
-    private final String content;
+    private Long id;
+    private String content;
+    private Long postId;
+    private String userName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public CommentResponseDto(Long id, Long userId, Long postId, String content) {
-        this.id = id;
-        this.userId = userId;
-        this.postId = postId;
-        this.content = content;
+    public static CommentResponseDto from(CommentDetailResponseDto commentDetailResponseDto) {
+        return CommentResponseDto.builder()
+                .id(commentDetailResponseDto.getId())
+                .content(commentDetailResponseDto.getContent())
+                .postId((commentDetailResponseDto.getPostId()))
+                .userName(commentDetailResponseDto.getUserName())
+                .createdAt(commentDetailResponseDto.getCreatedAt())
+                .updatedAt(commentDetailResponseDto.getUpdatedAt())
+                .build();
     }
 }
