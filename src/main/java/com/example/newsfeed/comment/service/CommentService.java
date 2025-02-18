@@ -89,4 +89,18 @@ public class CommentService {
             throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
         }
     }
+
+    public void deleteComment(Long userId, Long postId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new CustomException(ExceptionType.COMMENT_NOT_FOUND)
+        );
+
+        checkUserIdOfComment(userId, comment);
+
+        checkUserIdOfPost(userId, comment);
+
+        checkPostIdOfComment(postId, comment);
+
+        commentRepository.deleteById(commentId);
+    }
 }
