@@ -1,11 +1,13 @@
 package com.example.newsfeed.user.service;
 
+import com.example.newsfeed.auth.config.PasswordEncoder;
 import com.example.newsfeed.exception.CustomException;
 import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.user.domain.User;
+import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
+import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
 import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,35 +16,51 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * 새로운 유저 생성
-     */
     @Transactional
-    public User createUser(String name, String email, String password) {
-        // 이메일 중복 검사
-        if (userRepository.existsByEmail(email)) {
-            throw new CustomException(ExceptionType.DUPLICATE_EMAIL);
-        }
+    public void register(RegisterRequestDto requestDto) {
+        validateNotDuplicatedEmail(requestDto.getEmail());
 
-        // 비밀번호 암호화 후 저장
-        String encodedPassword = passwordEncoder.encode(password);
-        User newUser = User.builder()
-                .name(name)
-                .email(email)
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        User user = User.builder()
+                .email(requestDto.getEmail())
+                .name(requestDto.getName())
                 .password(encodedPassword)
                 .build();
 
-        return userRepository.save(newUser);
+        userRepository.save(user);
     }
 
-    /**
-     * 특정 유저 조회
-     */
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId)
+    @Transactional
+    public void withdraw(Long userId, WithdrawRequestDto requestDto) {
+        User user = userRepository.findByIdOrThrowNotFound(userId);
+
+        validatePasswordMatch(requestDto.getPassword(), user.getPassword());
+
+        userRepository.delete(user);
+    }
+
+    private void validateNotDuplicatedEmail(String email) {
+        userRepository.findByEmailWithDeleted(email)
+                .ifPresent(user -> {
+                    ExceptionType exceptionType = (user.getDeletedAt() == null)
+                            ? ExceptionType.DUPLICATE_EMAIL
+                            : ExceptionType.DELETED_ACCOUNT_EMAIL;
+                    throw new CustomException(exceptionType);
+                });
+    }
+
+    private void validatePasswordMatch(String inputPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
+            throw new CustomException(ExceptionType.INVALID_PASSWORD);
+        }
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
     }
 
@@ -94,16 +112,4 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
     }
-
-    /**
-     * 특정 유저 삭제
-     */
-    @Transactional
-    public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
-
-        user.delete(); // 논리 삭제 적용
-    }
-
 }
