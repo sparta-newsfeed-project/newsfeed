@@ -11,6 +11,9 @@ import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,16 +46,13 @@ public class CommentService {
         );
     }
 
-    public Paging.Response getAllComments(Long postId, LocalDate updatedAt, Paging.Request pagingRequest) {
-        List<CommentResponseDto> pagingData =  commentRepository.findAllByPostIdAndUpdatedAt(postId, updatedAt, pagingRequest)
-                .stream()
-                .map(CommentResponseDto::from)
-                .toList();
+    public Page<CommentResponseDto> getAllComments(Long postId, Paging.Request pagingRequest) {
+        // TODO : 1. updatedAt 내림차순으로 정렬되도록 만들어주세요
+        // TODO : 2. Pagination 공통 객체가 생성되면 해당 객체를 반환하도록 수정해주세요
 
-        return Paging.Response.builder()
-                .data(pagingData.isEmpty() ? new Object[0] : pagingData.toArray())
-                .size(pagingRequest.getSize())
-                .page(pagingRequest.getPage())
-                .build();
+        PageRequest pageRequest = PageRequest.of(pagingRequest.getPage(), pagingRequest.getSize());
+        Page<Comment> comments =  commentRepository.findAllByPostId(postId,pageRequest);
+
+        return comments.map(comment -> CommentResponseDto.from(comment));
     }
 }

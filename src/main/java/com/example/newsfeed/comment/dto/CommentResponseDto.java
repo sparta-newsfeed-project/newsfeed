@@ -18,14 +18,15 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static CommentResponseDto from(CommentDetailResponseDto commentDetailResponseDto) {
+    public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
-                .id(commentDetailResponseDto.getId())
-                .content(commentDetailResponseDto.getContent())
-                .postId((commentDetailResponseDto.getPostId()))
-                .userName(commentDetailResponseDto.getUserName())
-                .createdAt(commentDetailResponseDto.getCreatedAt())
-                .updatedAt(commentDetailResponseDto.getUpdatedAt())
+                .id(comment.getId())
+                .content(comment.getContent())
+                .postId((comment.getPost().getId()))
+                .userName(comment.getUser().getName())
+                .userName(comment.getUser().getName())
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 }
