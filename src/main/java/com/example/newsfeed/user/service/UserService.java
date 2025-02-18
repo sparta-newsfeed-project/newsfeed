@@ -52,4 +52,9 @@ public class UserService {
             throw new CustomException(ExceptionType.INVALID_PASSWORD);
         }
     }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
+    }
 }
