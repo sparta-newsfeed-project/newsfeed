@@ -1,15 +1,16 @@
 package com.example.newsfeed.comment.service;
 
 import com.example.newsfeed.comment.domain.Comment;
-import com.example.newsfeed.comment.dto.CommentCreateRequestDto;
-import com.example.newsfeed.comment.dto.CommentResponseDto;
-import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
+import com.example.newsfeed.comment.dto.*;
 import com.example.newsfeed.comment.pagination.Paging;
 import com.example.newsfeed.comment.repository.CommentRepository;
+import com.example.newsfeed.exception.CustomException;
+import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.post.domain.Post;
 import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +55,38 @@ public class CommentService {
                 .size(pagingRequest.getSize())
                 .page(pagingRequest.getPage())
                 .build();
+    }
+
+    public CommentUpdateResponseDto updateComment(Long userId, Long postId, Long commentId, @Valid CommentUpdateRequestDto dto) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new CustomException(ExceptionType.COMMENT_NOT_FOUND)
+        );
+
+        checkUserIdOfComment(userId, comment);
+
+        checkUserIdOfPost(userId, comment);
+
+        checkPostIdOfComment(postId, comment);
+
+        comment.update(dto.getContent());
+        return new CommentUpdateResponseDto(comment.getId(), comment.getContent());
+    }
+
+    private void checkPostIdOfComment(Long postId, Comment comment) {
+        if(!postRepository.findByComment(comment).getId().equals(postId)){
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
+    }
+
+    private void checkUserIdOfPost(Long userId, Comment comment) {
+        if(!postRepository.findByComment(comment).getUser().getId().equals(userId)){
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
+    }
+
+    private void checkUserIdOfComment(Long userId, Comment comment) {
+        if(!userRepository.findByComment(comment).getId().equals(userId)){
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
     }
 }
