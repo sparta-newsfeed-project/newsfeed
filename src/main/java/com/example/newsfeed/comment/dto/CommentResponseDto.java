@@ -15,8 +15,6 @@ public class CommentResponseDto {
     private String content;
     private Long postId;
     private String userName;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public static CommentResponseDto from(CommentDetailResponseDto commentDetailResponseDto) {
         return CommentResponseDto.builder()
@@ -24,8 +22,6 @@ public class CommentResponseDto {
                 .content(commentDetailResponseDto.getContent())
                 .postId((commentDetailResponseDto.getPostId()))
                 .userName(commentDetailResponseDto.getUserName())
-                .createdAt(commentDetailResponseDto.getCreatedAt())
-                .updatedAt(commentDetailResponseDto.getUpdatedAt())
                 .build();
     }
 }
