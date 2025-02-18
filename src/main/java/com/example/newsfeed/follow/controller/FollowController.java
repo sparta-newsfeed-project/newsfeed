@@ -17,25 +17,25 @@ public class FollowController {
 
     private final FollowService followService;
 
-    @PostMapping("/{userId}")
+    @PostMapping("/{targetUserId}")
     public ResponseEntity<Void> follow(
             @Authenticated Long currentUserId,
-            @PathVariable Long userId
+            @PathVariable Long targetUserId
     ) {
-        followService.createFollow(currentUserId, userId);
+        followService.createFollow(currentUserId, targetUserId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/{targetUserId}")
     public ResponseEntity<?> unfollow(
             @Authenticated Long currentUserId,
-            @PathVariable Long userId
+            @PathVariable Long targetUserId
     ) {
-        followService.deleteFollow(currentUserId, userId);
+        followService.deleteFollow(currentUserId, targetUserId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/following/{userId}")
+    @GetMapping("/{userId}/following")
     public ResponseEntity<Page<FollowListResponse>> followingList(
             @PathVariable Long userId,
             Pageable pageable
@@ -45,7 +45,7 @@ public class FollowController {
         );
     }
 
-    @GetMapping("/followers/{userId}")
+    @GetMapping("/{userId}/followers")
     public ResponseEntity<Page<FollowListResponse>> followerList(
             @PathVariable Long userId,
             Pageable pageable
