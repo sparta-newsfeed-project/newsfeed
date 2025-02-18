@@ -1,20 +1,15 @@
 package com.example.newsfeed.comment.controller;
 
 import com.example.newsfeed.comment.dto.CommentCreateRequestDto;
-import com.example.newsfeed.comment.dto.CommentDetailResponseDto;
 import com.example.newsfeed.comment.dto.CommentResponseDto;
 import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
 import com.example.newsfeed.comment.pagination.Paging;
 import com.example.newsfeed.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
