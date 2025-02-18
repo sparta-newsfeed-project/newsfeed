@@ -63,4 +63,11 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/following")
+    public PaginationResponse<PostResponse> getFollowingPosts(
+            @Authenticated Long currentUserId,
+            Pageable pageable
+    ) {
+        return postService.getFollowingPosts(currentUserId, pageable);
+    }
 }
