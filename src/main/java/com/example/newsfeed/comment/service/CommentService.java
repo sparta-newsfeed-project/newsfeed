@@ -62,19 +62,31 @@ public class CommentService {
                 () -> new CustomException(ExceptionType.COMMENT_NOT_FOUND)
         );
 
-        if(!userRepository.findByComment(comment).getId().equals(userId)){
-            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
-        }
+        checkUserIdOfComment(userId, comment);
 
-        if(!postRepository.findByComment(comment).getUser().getId().equals(userId)){
-            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
-        }
+        checkUserIdOfPost(userId, comment);
 
-        if(!postRepository.findByComment(comment).getId().equals(postId)){
-            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
-        }
+        checkPostIdOfComment(postId, comment);
 
         comment.update(dto.getContent());
         return new CommentUpdateResponseDto(comment.getId(), comment.getContent());
+    }
+
+    private void checkPostIdOfComment(Long postId, Comment comment) {
+        if(!postRepository.findByComment(comment).getId().equals(postId)){
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
+    }
+
+    private void checkUserIdOfPost(Long userId, Comment comment) {
+        if(!postRepository.findByComment(comment).getUser().getId().equals(userId)){
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
+    }
+
+    private void checkUserIdOfComment(Long userId, Comment comment) {
+        if(!userRepository.findByComment(comment).getId().equals(userId)){
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
     }
 }
