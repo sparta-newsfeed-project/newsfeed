@@ -35,12 +35,12 @@ CREATE TABLE comments (
 CREATE TABLE follows (
     id    BIGINT AUTO_INCREMENT PRIMARY KEY,
     follower_id     BIGINT NOT NULL,
-    following_id     BIGINT NOT NULL,
+    followed_id     BIGINT NOT NULL,
     created_at  DATETIME NOT NULL,
     updated_at  DATETIME NOT NULL,
     deleted_at DATETIME DEFAULT NULL,
     FOREIGN KEY (follower_id) REFERENCES users(id),
-    FOREIGN KEY (following_id) REFERENCES users(id)
+    FOREIGN KEY (followed_id) REFERENCES users(id)
 );
 
 
