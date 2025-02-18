@@ -34,17 +34,21 @@ public class UserService {
 
     @Transactional
     public void withdraw(Long userId, WithdrawRequestDto requestDto) {
-        User user = userRepository.findActiveUserByIdOrThrowNotFound(userId);
+        User user = userRepository.findByIdOrThrowNotFound(userId);
 
         validatePasswordMatch(requestDto.getPassword(), user.getPassword());
 
-        user.markAsDeleted();
+        userRepository.delete(user);
     }
 
     private void validateNotDuplicatedEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
-            throw new CustomException(ExceptionType.DUPLICATE_EMAIL);
-        }
+        userRepository.findByEmailWithDeleted(email)
+                .ifPresent(user -> {
+                    ExceptionType exceptionType = (user.getDeletedAt() == null)
+                            ? ExceptionType.DUPLICATE_EMAIL
+                            : ExceptionType.DELETED_ACCOUNT_EMAIL;
+                    throw new CustomException(exceptionType);
+                });
     }
 
     private void validatePasswordMatch(String inputPassword, String encodedPassword) {

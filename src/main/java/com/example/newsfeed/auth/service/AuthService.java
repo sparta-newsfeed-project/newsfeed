@@ -18,7 +18,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponseDto login(LoginRequestDto requestDto) {
-        User user = userRepository.findActiveUserByEmail(requestDto.getEmail())
+        User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new CustomException(ExceptionType.INVALID_CREDENTIALS));
 
         validatePasswordMatch(requestDto.getPassword(), user.getPassword());
