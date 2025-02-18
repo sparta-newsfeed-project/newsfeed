@@ -1,4 +1,4 @@
-package com.example.newsfeed.follow.service.repository;
+package com.example.newsfeed.follow.repository;
 
 import com.example.newsfeed.follow.domain.Follow;
 import com.example.newsfeed.user.domain.User;
