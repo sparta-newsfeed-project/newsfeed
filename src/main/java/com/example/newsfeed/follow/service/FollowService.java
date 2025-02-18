@@ -5,6 +5,7 @@ import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.follow.domain.Follow;
 import com.example.newsfeed.follow.dto.FollowListResponse;
 import com.example.newsfeed.follow.repository.FollowRepository;
+import com.example.newsfeed.global.pagination.PaginationResponse;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -46,30 +47,22 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public Page<FollowListResponse> getFollowingList(Long userId, Pageable pageable) {
+    public PaginationResponse<FollowListResponse> getFollowingList(Long userId, Pageable pageable) {
         User user = userService.getUserById(userId);
         Page<Follow> following = followRepository.findAllByFollower(user, pageable);
 
-        return new PageImpl<>(
-                following.stream()
-                        .map((follow)-> FollowListResponse.from(follow.getFollowed()))
-                        .toList(),
-                pageable,
-                following.getTotalElements()
+        return new PaginationResponse<FollowListResponse>(
+                following.map(follow -> FollowListResponse.from(follow.getFollowed()))
         );
     }
 
     @Transactional(readOnly = true)
-    public Page<FollowListResponse> getFollowersList(Long userId, Pageable pageable) {
+    public PaginationResponse<FollowListResponse> getFollowersList(Long userId, Pageable pageable) {
         User user = userService.getUserById(userId);
         Page<Follow> followers = followRepository.findAllByFollowed(user, pageable);
 
-        return new PageImpl<>(
-                followers.stream()
-                        .map((follow)-> FollowListResponse.from(follow.getFollower()))
-                        .toList(),
-                pageable,
-                followers.getTotalElements()
+        return new PaginationResponse<FollowListResponse>(
+                followers.map(follow -> FollowListResponse.from(follow.getFollower()))
         );
     }
 

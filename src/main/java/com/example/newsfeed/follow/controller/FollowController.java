@@ -3,6 +3,7 @@ package com.example.newsfeed.follow.controller;
 import com.example.newsfeed.auth.argument.Authenticated;
 import com.example.newsfeed.follow.dto.FollowListResponse;
 import com.example.newsfeed.follow.service.FollowService;
+import com.example.newsfeed.global.pagination.PaginationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public class FollowController {
     }
 
     @GetMapping("/{userId}/following")
-    public ResponseEntity<Page<FollowListResponse>> followingList(
+    public ResponseEntity<PaginationResponse<FollowListResponse>> followingList(
             @PathVariable Long userId,
             Pageable pageable
     ) {
@@ -46,7 +47,7 @@ public class FollowController {
     }
 
     @GetMapping("/{userId}/followers")
-    public ResponseEntity<Page<FollowListResponse>> followerList(
+    public ResponseEntity<PaginationResponse<FollowListResponse>> followerList(
             @PathVariable Long userId,
             Pageable pageable
     ) {
