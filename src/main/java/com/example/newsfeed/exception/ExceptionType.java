@@ -8,6 +8,7 @@ public enum ExceptionType {
 
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "요청값 검증에 실패했습니다."),
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "해당 이메일로 가입한 계정이 존재합니다."),
+    DELETED_ACCOUNT_EMAIL(HttpStatus.BAD_REQUEST, "해당 이메일로 가입한 계정은 이미 탈퇴되었습니다."),
     FOLLOW_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 팔로우된 상태입니다. "),
     SELF_FOLLOW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "자기 자신을 팔로우할 수 없습니다."),
 

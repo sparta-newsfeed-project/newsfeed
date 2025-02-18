@@ -3,11 +3,15 @@ package com.example.newsfeed.user.domain;
 import com.example.newsfeed.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
 public class User extends BaseTimeEntity {
 
     @Id
