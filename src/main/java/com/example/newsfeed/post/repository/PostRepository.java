@@ -21,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY p.createdAt DESC"
     )
     Page<Post> findAllByFollowing(@Param("user") User user, Pageable pageable);
+
+    Page<Post> findAllByUser(User user, Pageable pageable);
 }
