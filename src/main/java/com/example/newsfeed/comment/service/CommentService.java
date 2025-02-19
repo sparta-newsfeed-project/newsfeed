@@ -1,15 +1,16 @@
 package com.example.newsfeed.comment.service;
 
 import com.example.newsfeed.comment.domain.Comment;
-import com.example.newsfeed.comment.dto.CommentCreateRequestDto;
-import com.example.newsfeed.comment.dto.CommentResponseDto;
-import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
+import com.example.newsfeed.comment.dto.*;
 import com.example.newsfeed.comment.repository.CommentRepository;
+import com.example.newsfeed.exception.CustomException;
+import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.global.pagination.PaginationResponse;
 import com.example.newsfeed.post.domain.Post;
 import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -52,5 +53,33 @@ public class CommentService {
         Page<Comment> comments =  commentRepository.findAllByPostId(postId, pageable);
 
         return new PaginationResponse<>(comments.map(CommentResponseDto::from));
+    }
+
+    public CommentUpdateResponseDto updateComment(Long userId, Long postId, Long commentId, @Valid CommentUpdateRequestDto dto) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new CustomException(ExceptionType.COMMENT_NOT_FOUND)
+        );
+
+        isAuthorizedCommentEditor(userId, comment);
+
+        checkPostIdOfComment(postId, comment);
+
+        comment.update(dto.getContent());
+        return new CommentUpdateResponseDto(comment.getId(), comment.getContent());
+    }
+
+    private void checkPostIdOfComment(Long postId, Comment comment) {
+        if(!comment.getPost().getId().equals(postId)){
+            throw new CustomException(ExceptionType.COMMENT_NOT_FOUND);
+        }
+    }
+
+    private void isAuthorizedCommentEditor(Long userId, Comment comment) {
+        // 코멘트를 작성한 사람의 아이디가 userId랑 같은지
+        // 포스트를 작성한 사람의 아이디가 userId랑 같은지
+        if(!comment.getUser().getId().equals(userId) &&
+                !comment.getPost().getUser().getId().equals(userId)) {
+            throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
+        }
     }
 }

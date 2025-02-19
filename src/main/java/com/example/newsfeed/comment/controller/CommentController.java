@@ -1,10 +1,10 @@
 package com.example.newsfeed.comment.controller;
 
-import com.example.newsfeed.comment.dto.CommentCreateRequestDto;
-import com.example.newsfeed.comment.dto.CommentResponseDto;
-import com.example.newsfeed.comment.dto.CommentSimpleResponseDto;
+import com.example.newsfeed.auth.argument.Authenticated;
+import com.example.newsfeed.comment.dto.*;
 import com.example.newsfeed.comment.service.CommentService;
 import com.example.newsfeed.global.pagination.PaginationResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +32,16 @@ public class CommentController {
         );
     }
 
+    @PutMapping("/api/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentUpdateResponseDto> updateComment(
+            @Authenticated Long userId,
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @Valid @RequestBody CommentUpdateRequestDto dto
+    ) {
+        commentService.updateComment(userId, postId, commentId, dto);
+
+        return new ResponseEntity<>(
+                commentService.updateComment(userId, postId, commentId, dto), HttpStatus.OK);
+    }
 }
