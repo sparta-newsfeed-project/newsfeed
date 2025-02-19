@@ -103,15 +103,15 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
-            throw new CustomException(ExceptionType.INVALID_CREDENTIALS);
+            throw new CustomException(ExceptionType.INVALID_CREDENTIALS, "현재 비밀번호가 일치하지 않습니다.");
         }
 
         if (requestDto.getCurrentPassword().equals(requestDto.getNewPassword())) {
-            throw new CustomException(ExceptionType.INVALID_REQUEST);
+            throw new CustomException(ExceptionType.INVALID_REQUEST, "동일한 비밀번호로 변경할 수 없습니다.");
         }
 
-        // DTO에서 비밀번호 검증을 수행하므로 이 부분 제거됨
         user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+
     }
 
 
