@@ -38,6 +38,9 @@ public class CommentService {
         Comment comment = new Comment(user, post, dto.getContent());
         Comment savedComment = commentRepository.save(comment);
 
+        post.increaseCommentCount();
+        postRepository.save(post);
+
         return new CommentSimpleResponseDto(
                 savedComment.getId(),
                 savedComment.getUser().getId(),
