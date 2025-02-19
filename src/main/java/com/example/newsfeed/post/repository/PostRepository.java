@@ -26,4 +26,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("UPDATE Post p SET p.deletedAt = CURRENT_TIMESTAMP WHERE p.user.id = :userId AND p.deletedAt IS NULL")
     void softDeleteByUserId(@Param("userId") Long userId);
+
+    Page<Post> findAllByUser(User user, Pageable pageable);
 }

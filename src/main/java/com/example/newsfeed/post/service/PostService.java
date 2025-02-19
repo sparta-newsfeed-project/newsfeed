@@ -43,10 +43,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationResponse<PostResponse> getPosts(Pageable pageable) {
-        Page<Post> posts = postRepository.findAll(pageable);
+    public PaginationResponse<PostResponse> getPosts(Long userId, Pageable pageable) {
+        if(userId == null) {
+            return new PaginationResponse<>(getAll(pageable).map(PostResponse::from));
+        }
 
-        return new PaginationResponse<>(posts.map(PostResponse::from));
+        User user = userService.getUserById(userId);
+        return new PaginationResponse<>(getAllByUser(user,pageable).map(PostResponse::from));
     }
 
     @Transactional
@@ -74,6 +77,14 @@ public class PostService {
     public Post getPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(()-> new CustomException(ExceptionType.POST_NOT_FOUND));
+    }
+
+    private Page<Post> getAllByUser(User user, Pageable pageable) {
+        return postRepository.findAllByUser(user, pageable);
+    }
+
+    private Page<Post> getAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     public PaginationResponse<PostResponse> getFollowingPosts(Long userId, Pageable pageable) {
