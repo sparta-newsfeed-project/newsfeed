@@ -57,7 +57,7 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationResponse<FollowListResponse> getFollowersList(Long userId, Pageable pageable) {
+    public PaginationResponse<FollowListResponse> getFollowerList(Long userId, Pageable pageable) {
         User user = userService.getUserById(userId);
         Page<Follow> followers = followRepository.findAllByFollowed(user, pageable);
 

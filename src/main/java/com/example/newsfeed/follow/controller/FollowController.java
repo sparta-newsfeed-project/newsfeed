@@ -52,7 +52,7 @@ public class FollowController {
             Pageable pageable
     ) {
         return new ResponseEntity<>(
-                followService.getFollowersList(userId, pageable), HttpStatus.OK
+                followService.getFollowerList(userId, pageable), HttpStatus.OK
         );
     }
 }
