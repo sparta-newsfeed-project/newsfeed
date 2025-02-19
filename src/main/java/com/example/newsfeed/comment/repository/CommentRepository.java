@@ -24,6 +24,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "WHERE p.user_id = :postOwnerId AND c.deleted_at IS NULL",
     nativeQuery = true)
     void softDeleteByPostOwnerId(@Param("postOwnerId") Long postOwnerId);
-
-    Page<Comment> findAllByPostIdAndDeletedAtIsNull(Long postId, Pageable pageable);
 }

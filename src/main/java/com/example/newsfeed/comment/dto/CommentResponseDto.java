@@ -17,6 +17,7 @@ public class CommentResponseDto {
     private String userName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
@@ -27,6 +28,7 @@ public class CommentResponseDto {
                 .userName(comment.getUser().getName())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
+                .deletedAt(comment.getDeletedAt())
                 .build();
     }
 }
