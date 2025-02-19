@@ -15,11 +15,15 @@ import javax.net.ssl.SSLSession;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @EntityGraph(attributePaths = {"user"})
     @Query(
-            "SELECT p FROM Post p " +
-            "WHERE p.user IN (SELECT f.followed FROM Follow f WHERE f.follower = :user) " +
-            "ORDER BY p.createdAt DESC"
+            value = "SELECT p FROM Post p " +
+                    "JOIN FETCH p.user " +
+                    "JOIN Follow f ON p.user = f.followed " +
+                    "WHERE f.follower = :user " +
+                    "ORDER BY p.createdAt DESC",
+            countQuery = "SELECT COUNT(p) FROM Post p " +
+                    "JOIN Follow f ON p.user = f.followed " +
+                    "WHERE f.follower = :user"
     )
     Page<Post> findAllByFollowing(@Param("user") User user, Pageable pageable);
 

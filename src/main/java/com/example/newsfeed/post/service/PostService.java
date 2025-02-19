@@ -1,5 +1,6 @@
 package com.example.newsfeed.post.service;
 
+import com.example.newsfeed.comment.repository.CommentRepository;
 import com.example.newsfeed.exception.CustomException;
 import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.global.pagination.PaginationResponse;
@@ -8,7 +9,7 @@ import com.example.newsfeed.post.dto.PostRequest;
 import com.example.newsfeed.post.dto.PostResponse;
 import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
-import com.example.newsfeed.user.service.UserService;
+import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public PostResponse create(Long userId, PostRequest request) {
-        User user = userService.getUserById(userId);
+        User user = getUserById(userId);
         Post post = postRepository.save(
                 Post.builder()
                         .user(user)
@@ -48,7 +50,7 @@ public class PostService {
             return new PaginationResponse<>(getAll(pageable).map(PostResponse::from));
         }
 
-        User user = userService.getUserById(userId);
+        User user = getUserById(userId);
         return new PaginationResponse<>(getAllByUser(user,pageable).map(PostResponse::from));
     }
 
@@ -70,8 +72,8 @@ public class PostService {
             throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
         }
 
+        commentRepository.deleteAllByPost(post);
         postRepository.delete(post);
-        // TODO : Comment 삭제 필요
     }
 
     public Post getPostById(Long postId) {
@@ -88,9 +90,14 @@ public class PostService {
     }
 
     public PaginationResponse<PostResponse> getFollowingPosts(Long userId, Pageable pageable) {
-        User user = userService.getUserById(userId);
+        User user = getUserById(userId);
         Page<Post> posts = postRepository.findAllByFollowing(user, pageable);
 
         return new PaginationResponse<>(posts.map(PostResponse::from));
+    }
+
+    private User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
     }
 }
