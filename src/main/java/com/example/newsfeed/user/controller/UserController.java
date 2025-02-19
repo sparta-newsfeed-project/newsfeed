@@ -76,8 +76,11 @@ public class UserController {
 
     // 비밀번호 변경
     @PutMapping("/{userId}/password")
-    public ResponseEntity<Void> changePassword(@PathVariable Long userId, @RequestParam String currentPassword, @RequestParam String newPassword) {
-        userService.changePassword(userId, currentPassword, newPassword);
+    public ResponseEntity<Void> changePassword(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserRequestDto.ChangePasswordRequestDto requestDto) {
+
+        userService.changePassword(userId, requestDto);
         return ResponseEntity.ok().build();
     }
 }
