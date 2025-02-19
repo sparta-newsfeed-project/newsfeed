@@ -7,7 +7,7 @@ import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.follow.repository.FollowRepository;
 import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
-import com.example.newsfeed.user.dto.UserRequestDto;
+import com.example.newsfeed.user.dto.UserRequestDto.ChangePasswordRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
 import com.example.newsfeed.user.dto.UserResponseDto;
@@ -80,17 +80,7 @@ public class UserService {
      */
     @Transactional
     public void updateProfile(Long userId, String name, String introText) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
-
-        if (name == null || name.trim().isEmpty()) {
-            throw new CustomException(ExceptionType.INVALID_REQUEST);
-        }
-
-        if (introText != null && introText.length() > 200) {
-            throw new CustomException(ExceptionType.INVALID_REQUEST);
-        }
-
+        User user = userRepository.findByIdOrThrowNotFound(userId);
         user.update(name, introText);
     }
 
@@ -98,20 +88,16 @@ public class UserService {
      * 특정 사용자의 비밀번호 변경
      */
     @Transactional
-    public void changePassword(Long userId, UserRequestDto.ChangePasswordRequestDto requestDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
+    public void changePassword(Long userId, ChangePasswordRequestDto requestDto) {
+        User user = userRepository.findByIdOrThrowNotFound(userId);
 
-        if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
-            throw new CustomException(ExceptionType.INVALID_CREDENTIALS, "현재 비밀번호가 일치하지 않습니다.");
-        }
+        validatePasswordMatch(requestDto.getCurrentPassword(), user.getPassword());
 
         if (requestDto.getCurrentPassword().equals(requestDto.getNewPassword())) {
             throw new CustomException(ExceptionType.INVALID_REQUEST, "현재 비밀번호로 변경할 수 없습니다.");
         }
 
         user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
-
     }
 
 
