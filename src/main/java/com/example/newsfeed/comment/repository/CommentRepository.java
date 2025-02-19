@@ -1,6 +1,7 @@
 package com.example.newsfeed.comment.repository;
 
 import com.example.newsfeed.comment.domain.Comment;
+import com.example.newsfeed.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "WHERE p.user_id = :postOwnerId AND c.deleted_at IS NULL",
     nativeQuery = true)
     void softDeleteByPostOwnerId(@Param("postOwnerId") Long postOwnerId);
+
+    @Modifying
+    @Query("DELETE FROM Comment c WHERE c.post = :post")
+    void deleteAllByPost(@Param("post") Post post);
+
 }

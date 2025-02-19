@@ -72,8 +72,8 @@ public class PostService {
             throw new CustomException(ExceptionType.NO_PERMISSION_ACTION);
         }
 
+        commentRepository.deleteAllByPost(post);
         postRepository.delete(post);
-        // TODO : Comment 삭제 필요
     }
 
     public Post getPostById(Long postId) {
