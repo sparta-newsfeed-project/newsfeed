@@ -39,7 +39,6 @@ public class CommentController {
             @PathVariable Long commentId,
             @Valid @RequestBody CommentUpdateRequestDto dto
     ) {
-        commentService.updateComment(userId, postId, commentId, dto);
 
         return new ResponseEntity<>(
                 commentService.updateComment(userId, postId, commentId, dto), HttpStatus.OK);
