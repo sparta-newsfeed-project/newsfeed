@@ -14,6 +14,7 @@ public class PostResponse {
     private String title;
     private String content;
     private String userName;
+    private int commentCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -23,6 +24,7 @@ public class PostResponse {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .userName(post.getUser().getName())
+                .commentCount(post.getCommentCount())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
