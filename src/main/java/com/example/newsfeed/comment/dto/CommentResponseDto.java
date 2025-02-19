@@ -17,16 +17,30 @@ public class CommentResponseDto {
     private String userName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean isDeleted;
 
     public static CommentResponseDto from(Comment comment) {
+        if(comment.isDeleted()) {
+            return CommentResponseDto.builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .postId((comment.getPost().getId()))
+                    .userName(null)
+                    .isDeleted(comment.isDeleted())
+                    .createdAt(comment.getCreatedAt())
+                    .updatedAt(comment.getUpdatedAt())
+                    .build();
+        }
+
         return CommentResponseDto.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
                 .postId((comment.getPost().getId()))
                 .userName(comment.getUser().getName())
-                .userName(comment.getUser().getName())
+                .isDeleted(comment.isDeleted())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 }
+
