@@ -9,6 +9,7 @@ import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
+import com.example.newsfeed.user.dto.UserResponseDto;
 import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,14 @@ public class UserService {
         commentRepository.softDeleteByUserId(userId);
         commentRepository.softDeleteByPostOwnerId(userId);
         followRepository.softDeleteFollowsByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserProfile(Long userId) {
+        User user = getUserById(userId);
+        return UserResponseDto.from(user)
+                .setFollowerCount(followRepository.countByFollowed(user))
+                .setFollowingCount(followRepository.countByFollower(user));
     }
 
     public User getUserById(Long id) {
