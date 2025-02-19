@@ -7,10 +7,9 @@ import com.example.newsfeed.follow.dto.FollowListResponse;
 import com.example.newsfeed.follow.repository.FollowRepository;
 import com.example.newsfeed.global.pagination.PaginationResponse;
 import com.example.newsfeed.user.domain.User;
-import com.example.newsfeed.user.service.UserService;
+import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowService {
 
     private final FollowRepository followRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Transactional
     public void createFollow(Long currentUserId, Long userId) {
         checkSelfFollow(currentUserId, userId);
         checkFollowExists(currentUserId, userId);
 
-        User followerUser = userService.getUserById(currentUserId);
-        User followedUser = userService.getUserById(userId);
+        User followerUser = getUserById(currentUserId);
+        User followedUser = getUserById(userId);
         Follow follow = Follow.builder()
                 .follower(followerUser)
                 .followed(followedUser)
@@ -39,8 +38,8 @@ public class FollowService {
 
     @Transactional
     public void deleteFollow(Long currentUserId, Long userId) {
-        User followerUser = userService.getUserById(currentUserId);
-        User followedUser = userService.getUserById(userId);
+        User followerUser = getUserById(currentUserId);
+        User followedUser = getUserById(userId);
         Follow follow = getFollowByFollowerAndFollowedUser(followerUser, followedUser);
 
         followRepository.delete(follow);
@@ -48,7 +47,7 @@ public class FollowService {
 
     @Transactional(readOnly = true)
     public PaginationResponse<FollowListResponse> getFollowingList(Long userId, Pageable pageable) {
-        User user = userService.getUserById(userId);
+        User user = getUserById(userId);
         Page<Follow> following = followRepository.findAllByFollower(user, pageable);
 
         return new PaginationResponse<FollowListResponse>(
@@ -57,8 +56,8 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationResponse<FollowListResponse> getFollowersList(Long userId, Pageable pageable) {
-        User user = userService.getUserById(userId);
+    public PaginationResponse<FollowListResponse> getFollowerList(Long userId, Pageable pageable) {
+        User user = getUserById(userId);
         Page<Follow> followers = followRepository.findAllByFollowed(user, pageable);
 
         return new PaginationResponse<FollowListResponse>(
@@ -81,5 +80,10 @@ public class FollowService {
         if(followerId.equals(followedId)) {
             throw new CustomException(ExceptionType.SELF_FOLLOW_NOT_ALLOWED);
         }
+    }
+
+    private User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
     }
 }
