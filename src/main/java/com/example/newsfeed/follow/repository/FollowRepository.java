@@ -5,6 +5,7 @@ import com.example.newsfeed.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -23,4 +24,10 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Query("SELECT f FROM Follow f JOIN FETCH f.follower WHERE f.followed = :user")
     Page<Follow> findAllByFollowed(@Param("user")User user, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Follow f " +
+            "SET f.deletedAt = CURRENT_TIMESTAMP " +
+            "WHERE (f.followed.id = :userId OR f.follower.id = :userId) AND f.deletedAt IS NULL")
+    void softDeleteFollowsByUserId(@Param("userId") Long userId);
 }

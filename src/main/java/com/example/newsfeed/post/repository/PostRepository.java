@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,6 +22,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY p.createdAt DESC"
     )
     Page<Post> findAllByFollowing(@Param("user") User user, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Post p SET p.deletedAt = CURRENT_TIMESTAMP WHERE p.user.id = :userId AND p.deletedAt IS NULL")
+    void softDeleteByUserId(@Param("userId") Long userId);
 
     Page<Post> findAllByUser(User user, Pageable pageable);
 }
