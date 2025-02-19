@@ -18,8 +18,12 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/api/posts/{postId}/comments")
-    public ResponseEntity<CommentSimpleResponseDto> saveComment(@PathVariable Long postId, @RequestBody CommentCreateRequestDto dto) {
-        return ResponseEntity.ok(commentService.saveComment(postId, dto));
+    public ResponseEntity<CommentSimpleResponseDto> saveComment(
+            @Authenticated Long userId,
+            @PathVariable Long postId,
+            @RequestBody CommentCreateRequestDto dto
+    ) {
+        return ResponseEntity.ok(commentService.saveComment(userId, postId, dto));
     }
 
     @GetMapping("/api/posts/{postId}/comments")
@@ -39,7 +43,6 @@ public class CommentController {
             @PathVariable Long commentId,
             @Valid @RequestBody CommentUpdateRequestDto dto
     ) {
-        commentService.updateComment(userId, postId, commentId, dto);
 
         return new ResponseEntity<>(
                 commentService.updateComment(userId, postId, commentId, dto), HttpStatus.OK);

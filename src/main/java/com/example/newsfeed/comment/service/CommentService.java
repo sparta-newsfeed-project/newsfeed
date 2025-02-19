@@ -26,8 +26,8 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CommentSimpleResponseDto saveComment(Long postId, CommentCreateRequestDto dto) {
-        User user = userRepository.findById(dto.getUserId()).orElseThrow(
+    public CommentSimpleResponseDto saveComment(Long userId, Long postId, CommentCreateRequestDto dto) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalStateException("User not found")
         );
 
