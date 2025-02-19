@@ -50,7 +50,7 @@ public class CommentService {
     // TODO : 2. Pagination 공통 객체가 생성되면 해당 객체를 반환하도록 수정해주세요
     @Transactional(readOnly = true)
     public PaginationResponse<CommentResponseDto> getAllComments(Long postId, Pageable pageable) {
-        Page<Comment> comments =  commentRepository.findAllByPostId(postId, pageable);
+        Page<Comment> comments =  commentRepository.findAllByPostIdAndDeletedAtIsNull(postId, pageable);
 
         return new PaginationResponse<>(comments.map(CommentResponseDto::from));
     }
