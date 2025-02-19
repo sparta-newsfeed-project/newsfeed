@@ -7,11 +7,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "posts")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
 public class Post extends BaseTimeEntity {
 
     @Id
@@ -27,6 +29,8 @@ public class Post extends BaseTimeEntity {
 
     private String content;
 
+    private int commentCount = 0;
+
     @Builder
     public Post(User user, String title, String content) {
         this.user = user;
@@ -37,5 +41,15 @@ public class Post extends BaseTimeEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void incrementCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decrementCommentCount() {
+        if(this.commentCount > 0) {
+            this.commentCount--;
+        }
     }
 }
