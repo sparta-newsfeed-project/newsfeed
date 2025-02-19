@@ -38,9 +38,10 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<PaginationResponse<PostResponse>> getPosts(
+            @RequestParam(required = false) Long userId,
             Pageable pageable
     ) {
-        return new ResponseEntity<>(postService.getPosts(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPosts(userId, pageable), HttpStatus.OK);
     }
 
     @PutMapping("/{postId}")
