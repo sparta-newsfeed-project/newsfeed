@@ -107,7 +107,7 @@ public class UserService {
         }
 
         if (requestDto.getCurrentPassword().equals(requestDto.getNewPassword())) {
-            throw new CustomException(ExceptionType.INVALID_REQUEST, "동일한 비밀번호로 변경할 수 없습니다.");
+            throw new CustomException(ExceptionType.INVALID_REQUEST, "현재 비밀번호로 변경할 수 없습니다.");
         }
 
         user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
