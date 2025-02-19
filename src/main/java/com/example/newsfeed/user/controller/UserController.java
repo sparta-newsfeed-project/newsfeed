@@ -53,9 +53,8 @@ public class UserController {
 
     // 특정 유저 조회
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
-        return ResponseEntity.ok(new UserResponseDto(user));
+    public ResponseEntity<UserResponseDto> getUserProfile(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.getUserProfile(userId), HttpStatus.OK);
     }
 
     // 전체 유저 조회
