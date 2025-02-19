@@ -1,8 +1,11 @@
 package com.example.newsfeed.user.service;
 
 import com.example.newsfeed.auth.config.PasswordEncoder;
+import com.example.newsfeed.comment.repository.CommentRepository;
 import com.example.newsfeed.exception.CustomException;
 import com.example.newsfeed.exception.ExceptionType;
+import com.example.newsfeed.follow.repository.FollowRepository;
+import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
 import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
@@ -18,6 +21,9 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -41,22 +47,10 @@ public class UserService {
         validatePasswordMatch(requestDto.getPassword(), user.getPassword());
 
         userRepository.delete(user);
-    }
-
-    private void validateNotDuplicatedEmail(String email) {
-        userRepository.findByEmailWithDeleted(email)
-                .ifPresent(user -> {
-                    ExceptionType exceptionType = (user.getDeletedAt() == null)
-                            ? ExceptionType.DUPLICATE_EMAIL
-                            : ExceptionType.DELETED_ACCOUNT_EMAIL;
-                    throw new CustomException(exceptionType);
-                });
-    }
-
-    private void validatePasswordMatch(String inputPassword, String encodedPassword) {
-        if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
-            throw new CustomException(ExceptionType.INVALID_PASSWORD);
-        }
+        postRepository.softDeleteByUserId(userId);
+        commentRepository.softDeleteByUserId(userId);
+        commentRepository.softDeleteByPostOwnerId(userId);
+        followRepository.softDeleteFollowsByUserId(userId);
     }
 
     public User getUserById(Long id) {
@@ -111,5 +105,21 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
+    }
+
+    private void validateNotDuplicatedEmail(String email) {
+        userRepository.findByEmailWithDeleted(email)
+                .ifPresent(user -> {
+                    ExceptionType exceptionType = (user.getDeletedAt() == null)
+                            ? ExceptionType.DUPLICATE_EMAIL
+                            : ExceptionType.DELETED_ACCOUNT_EMAIL;
+                    throw new CustomException(exceptionType);
+                });
+    }
+
+    private void validatePasswordMatch(String inputPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
+            throw new CustomException(ExceptionType.INVALID_PASSWORD);
+        }
     }
 }
