@@ -91,9 +91,16 @@ public class CommentService {
                 () -> new CustomException(ExceptionType.COMMENT_NOT_FOUND)
         );
 
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new CustomException(ExceptionType.POST_NOT_FOUND)
+        );
+
         isAuthorizedCommentEditor(userId, comment);
 
         checkPostIdOfComment(postId, comment);
+
+        post.decreaseCommentCount();
+        postRepository.save(post);
 
         commentRepository.deleteById(commentId);
     }
