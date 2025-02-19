@@ -7,6 +7,7 @@ import com.example.newsfeed.exception.ExceptionType;
 import com.example.newsfeed.follow.repository.FollowRepository;
 import com.example.newsfeed.post.repository.PostRepository;
 import com.example.newsfeed.user.domain.User;
+import com.example.newsfeed.user.dto.UserRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.RegisterRequestDto;
 import com.example.newsfeed.user.dto.UserRequestDto.WithdrawRequestDto;
 import com.example.newsfeed.user.dto.UserResponseDto;
@@ -97,24 +98,22 @@ public class UserService {
      * 특정 사용자의 비밀번호 변경
      */
     @Transactional
-    public void changePassword(Long userId, String currentPassword, String newPassword) {
+    public void changePassword(Long userId, UserRequestDto.ChangePasswordRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
             throw new CustomException(ExceptionType.INVALID_CREDENTIALS);
         }
 
-        if (currentPassword.equals(newPassword)) {
+        if (requestDto.getCurrentPassword().equals(requestDto.getNewPassword())) {
             throw new CustomException(ExceptionType.INVALID_REQUEST);
         }
 
-        if (newPassword.length() < 8 || !newPassword.matches(".*[a-zA-Z].*") || !newPassword.matches(".*\\d.*")) {
-            throw new CustomException(ExceptionType.INVALID_REQUEST);
-        }
-
-        user.setPassword(passwordEncoder.encode(newPassword));
+        // DTO에서 비밀번호 검증을 수행하므로 이 부분 제거됨
+        user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
     }
+
 
     private void validateNotDuplicatedEmail(String email) {
         userRepository.findByEmailWithDeleted(email)
