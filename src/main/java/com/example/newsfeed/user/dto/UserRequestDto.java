@@ -12,16 +12,18 @@ public class UserRequestDto {
     @Getter
     @NoArgsConstructor
     public static class ProfileRequestDto {
-        // 클라이언트가 보낸 요청 데이터를 담는 DTO
+        @NotBlank
+        @Size(max = 100)
         private String name;
-        private String email;
-        private String password;
+
+        @NotBlank
+        @Size(max = 255)
         private String introText;
     }
 
     @Getter
     @NoArgsConstructor
-    public class ChangePasswordRequestDto {
+    public static class ChangePasswordRequestDto {
 
         @NotBlank(message = "현재 비밀번호를 입력해야 합니다.")
         private String currentPassword;
