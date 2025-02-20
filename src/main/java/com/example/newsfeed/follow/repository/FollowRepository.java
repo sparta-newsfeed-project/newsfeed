@@ -23,10 +23,16 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     Long countByFollowed(User followed);
 
-    @Query("SELECT f FROM Follow f JOIN FETCH f.followed WHERE f.follower = :user")
+    @Query(
+            value = "SELECT f FROM Follow f JOIN FETCH f.followed fw WHERE f.follower = :user AND fw.deletedAt IS NULL",
+            countQuery = "SELECT COUNT(f) FROM Follow f WHERE f.follower = :user"
+    )
     Page<Follow> findAllByFollower(@Param("user") User user, Pageable pageable);
 
-    @Query("SELECT f FROM Follow f JOIN FETCH f.follower WHERE f.followed = :user")
+    @Query(
+            value = "SELECT f FROM Follow f JOIN FETCH f.follower fw WHERE f.followed = :user AND fw.deletedAt IS NULL",
+            countQuery = "SELECT COUNT(f) FROM Follow f WHERE f.followed = :user"
+    )
     Page<Follow> findAllByFollowed(@Param("user")User user, Pageable pageable);
 
     @Modifying
