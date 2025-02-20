@@ -33,8 +33,7 @@
 - 접근 권한 검증
 
 ## ERD
-
-![img.png](img.png)
+<img width="1238" alt="Screenshot 2025-02-20 at 10 56 04" src="https://github.com/user-attachments/assets/3655b7ae-9b69-4518-bb2d-2fc18027bb95" />
 
 
 ## API 명세서
