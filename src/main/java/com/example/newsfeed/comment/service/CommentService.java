@@ -58,6 +58,7 @@ public class CommentService {
         return new PaginationResponse<>(comments.map(CommentResponseDto::from));
     }
 
+    @Transactional()
     public CommentUpdateResponseDto updateComment(Long userId, Long postId, Long commentId, @Valid CommentUpdateRequestDto dto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new CustomException(ExceptionType.COMMENT_NOT_FOUND)
